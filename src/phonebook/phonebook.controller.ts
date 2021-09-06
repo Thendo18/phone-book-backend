@@ -9,7 +9,17 @@ export class PhonebookController {
 
 	@Get('search')
 	async searchProduct(@Req() req: Request){
-		return this.__phonebook.searchPhonebookByNameOrNumber({});
+		let options: any = {}
+
+		if (req.query.s) {
+			options = {
+				$or: [
+					{ name: new RegExp(req.query.s.toString(), 'i' )},
+				],
+			}	
+		}
+
+		return this.__phonebook.searchPhonebookByNameOrNumber(options);
 	}
 
 	@Post()
@@ -36,4 +46,5 @@ export class PhonebookController {
 	async deleteOnePhonebook(@Param('phonebookId') phonebookId: string ){
 		return await this.__phonebook.deleteOnePhonebookFromTheDatabase(phonebookId);
 	}
+
 }
