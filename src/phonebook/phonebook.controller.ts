@@ -23,7 +23,7 @@ export class PhonebookController {
 	}
 
 	@Post()
-	async addNewPhonebook(@Body() phonebook : { phone: number, name: string }){
+	async addNewPhonebook(@Body() phonebook : { phone: number, email: string, name: string }){
 		return await this.__phonebook.addNewPhonebookToTheDatabase(phonebook);
 	}
 
@@ -38,7 +38,7 @@ export class PhonebookController {
 	}
 
 	@Patch('/:phonebookId')
-	async updateOnePhonebook(@Param('phonebookId') phonebookId: string, @Body() phonebook : { phone: number, name: string }){
+	async updateOnePhonebook(@Param('phonebookId') phonebookId: string, @Body() phonebook : { phone: number, email: string, name: string }){
 		return await this.__phonebook.updateOnePhonebookFromTheDatabase(phonebookId, phonebook);
 	}
 

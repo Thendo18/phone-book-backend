@@ -13,32 +13,29 @@ export class PhonebookService {
 			const phonebook_model = new this.__phonebookModel(phonebook);
 			return await phonebook_model.save();
 		} catch (error) {
-			if (error.code === 11000) throw new BadRequestException("Phone number already exists!");
-
 			throw new BadRequestException(error);
 		}
 	}
 
 	async getAllPhonebooksFromTheDatabase(){
-		return (await this.__phonebookModel.find().exec()).map((book: any) => ({ id: book.id, phone: book.phone, name: book.name }));
+		return (await this.__phonebookModel.find().exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
-		return (await this.__phonebookModel.find({ _id: phonebookId }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, name: book.name }));;
+		return (await this.__phonebookModel.find({ _id: phonebookId }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));;
 	}
 
 	async updateOnePhonebookFromTheDatabase(phonebookId: string, new_phonebook: any){
 		const current_phonebook = await this.__phonebookModel.findOne({ _id: phonebookId }).exec();
 
-		if (new_phonebook.name) current_phonebook.name = new_phonebook.name;
+		if (new_phonebook.email) current_phonebook.email = new_phonebook.email;
 		if (new_phonebook.phone) current_phonebook.phone = new_phonebook.phone;
+		if (new_phonebook.name) current_phonebook.name = new_phonebook.name;
 
 		try {
 			const phonebook_model = new this.__phonebookModel(current_phonebook);
 			return await phonebook_model.save();
 		} catch (error) {
-			if (error.code === 11000) throw new BadRequestException("Phone number already exists!");
-
 			throw new BadRequestException(error);
 		}
 	}
