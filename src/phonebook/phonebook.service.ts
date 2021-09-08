@@ -19,11 +19,11 @@ export class PhonebookService {
 	}
 
 	async getAllPhonebooksFromTheDatabase(){
-		return (await this.__phonebookModel.find().exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		return (await this.__phonebookModel.find().sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
-		return (await this.__phonebookModel.find({ _id: phonebookId }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		return (await this.__phonebookModel.find({ _id: phonebookId }).sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 
 	async updateOnePhonebookFromTheDatabase(phonebookId: string, new_phonebook: any){
@@ -53,6 +53,6 @@ export class PhonebookService {
 				{ name: new RegExp(requset.query.s.toString(), 'i' )}, 
 				{ email: new RegExp(requset.query.s.toString(), 'i' )}, 
 			] 
-		}).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		}).sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 }
