@@ -19,7 +19,7 @@ export class PhonebookService {
 	}
 
 	async getAllPhonebooksFromTheDatabase(){
-		return (await this.__phonebookModel.find().sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		return (await this.__phonebookModel.find().sort({ name: 1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
@@ -54,6 +54,6 @@ export class PhonebookService {
 				{ name: new RegExp(requset.query.s.toString(), 'i' )}, 
 				{ email: new RegExp(requset.query.s.toString(), 'i' )}, 
 			] 
-		}).sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		}).sort({ name: 1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 }
