@@ -11,7 +11,8 @@ export class PhonebookService {
 	async addNewPhonebookToTheDatabase(phonebook: any){
 		try {
 			const phonebook_model = new this.__phonebookModel(phonebook);
-			return await phonebook_model.save();
+			const book = await phonebook_model.save();
+			return { id: book.id, phone: book.phone, email: book.email, name: book.name }
 		} catch (error) {
 			throw new BadRequestException(error);
 		}
@@ -22,7 +23,7 @@ export class PhonebookService {
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
-		return (await this.__phonebookModel.find({ _id: phonebookId }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));;
+		return (await this.__phonebookModel.find({ _id: phonebookId }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 
 	async updateOnePhonebookFromTheDatabase(phonebookId: string, new_phonebook: any){
@@ -34,7 +35,8 @@ export class PhonebookService {
 
 		try {
 			const phonebook_model = new this.__phonebookModel(current_phonebook);
-			return await phonebook_model.save();
+			const book = await phonebook_model.save();
+			return { id: book.id, phone: book.phone, email: book.email, name: book.name }
 		} catch (error) {
 			throw new BadRequestException(error);
 		}
@@ -45,7 +47,12 @@ export class PhonebookService {
 		return { message: `successfully deleted ${remove_phonebook.name}'s number` };
 	}
 
-	searchPhonebookByNameOrNumber(options: any){
-		return this.__phonebookModel.find(options).exec();
+	async searchPhonebookByNameOrNumber(requset: any){
+		return (await this.__phonebookModel.find({
+			$or: [ 
+				{ name: new RegExp(requset.query.s.toString(), 'i' )}, 
+				{ email: new RegExp(requset.query.s.toString(), 'i' )}, 
+			] 
+		}).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
 	}
 }

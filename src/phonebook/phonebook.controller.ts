@@ -9,17 +9,7 @@ export class PhonebookController {
 
 	@Get('search')
 	async searchProduct(@Req() req: Request){
-		let options: any = {}
-
-		if (req.query.s) {
-			options = {
-				$or: [
-					{ name: new RegExp(req.query.s.toString(), 'i' )},
-				],
-			}	
-		}
-
-		return this.__phonebook.searchPhonebookByNameOrNumber(options);
+		return await this.__phonebook.searchPhonebookByNameOrNumber(req);
 	}
 
 	@Post()
