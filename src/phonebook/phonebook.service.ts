@@ -23,7 +23,8 @@ export class PhonebookService {
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
-		return (await this.__phonebookModel.find({ _id: phonebookId }).sort({ name: -1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+		const book = await this.__phonebookModel.findOne({ _id: phonebookId }).exec();
+		return { id: book.id, phone: book.phone, email: book.email, name: book.name };
 	}
 
 	async updateOnePhonebookFromTheDatabase(phonebookId: string, new_phonebook: any){
