@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Phonebook } from './phonebook-model-shema';
@@ -23,12 +23,12 @@ export class PhonebookService {
 	}
 
 	async getOnePhonebookFromTheDatabase(phonebookId: string){
-		const book = await this.__phonebookModel.findOne({ _id: phonebookId }).exec();
+		const book = await this.findOnePhonebookFromTheDatabase(phonebookId);
 		return { id: book.id, phone: book.phone, email: book.email, name: book.name };
 	}
 
 	async updateOnePhonebookFromTheDatabase(phonebookId: string, new_phonebook: any){
-		const current_phonebook = await this.__phonebookModel.findOne({ _id: phonebookId }).exec();
+		const current_phonebook = await this.findOnePhonebookFromTheDatabase(phonebookId);
 
 		if (new_phonebook.email) current_phonebook.email = new_phonebook.email;
 		if (new_phonebook.phone) current_phonebook.phone = new_phonebook.phone;
@@ -44,6 +44,7 @@ export class PhonebookService {
 	}
 
 	async deleteOnePhonebookFromTheDatabase(phonebookId: string){
+		await this.findOnePhonebookFromTheDatabase(phonebookId);
 		const remove_phonebook = await this.__phonebookModel.findOneAndDelete({ _id: phonebookId }).exec();
 		return { message: `successfully deleted ${remove_phonebook.name}'s number` };
 	}
@@ -55,5 +56,19 @@ export class PhonebookService {
 				{ email: new RegExp(requset.query.s.toString(), 'i' )}, 
 			] 
 		}).sort({ name: 1 }).exec()).map((book: any) => ({ id: book.id, phone: book.phone, email: book.email, name: book.name }));
+	}
+
+	async findOnePhonebookFromTheDatabase(id: string){
+		let phonebook: any;
+
+		try {
+			phonebook = await this.__phonebookModel.findOne({ _id: id});
+		} catch (error) {
+			throw new NotFoundException('Contact Not In Your Phonebook');
+		}
+
+		if (!phonebook) throw new NotFoundException('Contact Not In Your Phonebook');
+
+		return phonebook;
 	}
 }
