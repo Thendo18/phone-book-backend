@@ -14,6 +14,10 @@ export class PhonebookService {
 			const book = await phonebook_model.save();
 			return { id: book.id, phone: book.phone, email: book.email, name: book.name }
 		} catch (error) {
+			if (error.code === 11000) {
+				if (error.keyValue.phone) throw new BadRequestException("Phone number already exists");
+				if (error.keyValue.email) throw new BadRequestException("Email already exists");
+			}
 			throw new BadRequestException(error);
 		}
 	}
@@ -39,6 +43,10 @@ export class PhonebookService {
 			const book = await phonebook_model.save();
 			return { id: book.id, phone: book.phone, email: book.email, name: book.name }
 		} catch (error) {
+			if (error.code === 11000) {
+				if (error.keyValue.phone) throw new BadRequestException("Phone number already exists");
+				if (error.keyValue.email) throw new BadRequestException("Email already exists");
+			}
 			throw new BadRequestException(error);
 		}
 	}
